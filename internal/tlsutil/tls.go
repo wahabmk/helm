@@ -56,7 +56,12 @@ func CertPoolFromFile(filename string) (*x509.CertPool, error) {
 	if err != nil {
 		return nil, errors.Errorf("can't read CA file: %v", filename)
 	}
-	cp := x509.NewCertPool()
+
+	cp, err := x509.SystemCertPool()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load system cert pool")
+	}
+
 	if !cp.AppendCertsFromPEM(b) {
 		return nil, errors.Errorf("failed to append certificates from file: %s", filename)
 	}
