@@ -18,7 +18,6 @@ package tlsutil
 
 import (
 	"path/filepath"
-	"runtime"
 	"testing"
 )
 
@@ -47,7 +46,7 @@ func TestClientConfig(t *testing.T) {
 		t.Fatalf("expecting 1 client certificates, got %d", got)
 	}
 	if cfg.InsecureSkipVerify {
-		t.Fatalf("insecure skip verify mistmatch, expecting false")
+		t.Fatalf("insecure skip verify mismatch, expecting false")
 	}
 	if cfg.RootCAs == nil {
 		t.Fatalf("mismatch tls RootCAs, expecting non-nil")
@@ -67,72 +66,48 @@ func TestNewClientTLS(t *testing.T) {
 	keyFile := testfile(t, testKeyFile)
 	caCertFile := testfile(t, testCaCertFile)
 
-	t.Run("Test NewClientTLS with CA file and Cert from file pair", func(t *testing.T) {
-		cfg, err := NewClientTLS(certFile, keyFile, caCertFile)
-		if err != nil {
-			t.Error(err)
-		}
+	cfg, err := NewClientTLS(certFile, keyFile, caCertFile)
+	if err != nil {
+		t.Error(err)
+	}
 
-		if got := len(cfg.Certificates); got != 1 {
-			t.Fatalf("expecting 1 client certificates, got %d", got)
-		}
-		if cfg.InsecureSkipVerify {
-			t.Fatalf("insecure skip verify mistmatch, expecting false")
-		}
-		if cfg.RootCAs == nil {
-			t.Fatalf("mismatch tls RootCAs, expecting non-nil")
-		}
-		if runtime.GOOS == "windows" {
-			if got := len(cfg.RootCAs.Subjects()); got != 1 {
-				t.Fatalf("expecting 1 subject in the pool, got %d", got)
-			}
-		} else {
-			if got := len(cfg.RootCAs.Subjects()); got <= 1 {
-				t.Fatalf("expecting more than 1 subject in the pool, got %d", got)
-			}
-		}
-	})
+	if got := len(cfg.Certificates); got != 1 {
+		t.Fatalf("expecting 1 client certificates, got %d", got)
+	}
+	if cfg.InsecureSkipVerify {
+		t.Fatalf("insecure skip verify mismatch, expecting false")
+	}
+	if cfg.RootCAs == nil {
+		t.Fatalf("mismatch tls RootCAs, expecting non-nil")
+	}
 
-	t.Run("Test NewClientTLS with only CA file", func(t *testing.T) {
-		cfg, err := NewClientTLS("", "", caCertFile)
-		if err != nil {
-			t.Error(err)
-		}
+	cfg, err = NewClientTLS("", "", caCertFile)
+	if err != nil {
+		t.Error(err)
+	}
 
-		if got := len(cfg.Certificates); got != 0 {
-			t.Fatalf("expecting 0 client certificates, got %d", got)
-		}
-		if cfg.InsecureSkipVerify {
-			t.Fatalf("insecure skip verify mistmatch, expecting false")
-		}
-		if cfg.RootCAs == nil {
-			t.Fatalf("mismatch tls RootCAs, expecting non-nil")
-		}
-		if runtime.GOOS == "windows" {
-			if got := len(cfg.RootCAs.Subjects()); got != 1 {
-				t.Fatalf("expecting 1 subject in the pool, got %d", got)
-			}
-		} else {
-			if got := len(cfg.RootCAs.Subjects()); got <= 1 {
-				t.Fatalf("expecting more than 1 subject in the pool, got %d", got)
-			}
-		}
-	})
+	if got := len(cfg.Certificates); got != 0 {
+		t.Fatalf("expecting 0 client certificates, got %d", got)
+	}
+	if cfg.InsecureSkipVerify {
+		t.Fatalf("insecure skip verify mismatch, expecting false")
+	}
+	if cfg.RootCAs == nil {
+		t.Fatalf("mismatch tls RootCAs, expecting non-nil")
+	}
 
-	t.Run("Test NewClientTLS with only Cert from file pair", func(t *testing.T) {
-		cfg, err := NewClientTLS(certFile, keyFile, "")
-		if err != nil {
-			t.Error(err)
-		}
+	cfg, err = NewClientTLS(certFile, keyFile, "")
+	if err != nil {
+		t.Error(err)
+	}
 
-		if got := len(cfg.Certificates); got != 1 {
-			t.Fatalf("expecting 1 client certificates, got %d", got)
-		}
-		if cfg.InsecureSkipVerify {
-			t.Fatalf("insecure skip verify mistmatch, expecting false")
-		}
-		if cfg.RootCAs != nil {
-			t.Fatalf("mismatch tls RootCAs, expecting nil")
-		}
-	})
+	if got := len(cfg.Certificates); got != 1 {
+		t.Fatalf("expecting 1 client certificates, got %d", got)
+	}
+	if cfg.InsecureSkipVerify {
+		t.Fatalf("insecure skip verify mismatch, expecting false")
+	}
+	if cfg.RootCAs != nil {
+		t.Fatalf("mismatch tls RootCAs, expecting nil")
+	}
 }
