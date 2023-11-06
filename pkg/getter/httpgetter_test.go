@@ -18,7 +18,6 @@ package getter
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -394,7 +393,7 @@ func TestDownloadTLSWithRedirect(t *testing.T) {
 			t.Error(err)
 		}
 
-		b, err := ioutil.ReadAll(buf)
+		b, err := io.ReadAll(buf)
 		if err != nil {
 			t.Error(err)
 		}
@@ -415,7 +414,7 @@ func TestDownloadTLSWithRedirect(t *testing.T) {
 			t.Error(err)
 		}
 
-		b, err := ioutil.ReadAll(buf)
+		b, err := io.ReadAll(buf)
 		if err != nil {
 			t.Error(err)
 		}
@@ -436,7 +435,7 @@ func TestDownloadTLSWithRedirect(t *testing.T) {
 			t.Error(err)
 		}
 
-		b, err := ioutil.ReadAll(buf)
+		b, err := io.ReadAll(buf)
 		if err != nil {
 			t.Error(err)
 		}
